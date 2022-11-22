@@ -6,6 +6,12 @@
 // [START run_pubsub_server_setup]
 const express = require('express');
 const app = express();
+const PORT = 8080;
+
+app.listen(PORT, function(err){
+    if (err) console.log("Error in server setup")
+    console.log("Server listening on Port", PORT);
+})
 
 // This middleware is available in Express v4.16.0 onwards
 app.use(express.json());
