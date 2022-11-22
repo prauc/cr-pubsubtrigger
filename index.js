@@ -8,41 +8,17 @@ const express = require('express');
 const app = express();
 const PORT = 8080;
 
-app.listen(PORT, function(err){
-    if (err) console.log("Error in server setup")
-    console.log("Server listening on Port", PORT);
-})
-
-// This middleware is available in Express v4.16.0 onwards
-app.use(express.json());
-// [END run_pubsub_server_setup]
-// [END cloudrun_pubsub_server_setup]
-
-// [START cloudrun_pubsub_handler]
-// [START run_pubsub_handler]
-app.post('/', (req, res) => {
-  if (!req.body) {
-    const msg = 'no Pub/Sub message received';
-    console.error(`error: ${msg}`);
-    res.status(400).send(`Bad Request: ${msg}`);
-    return;
-  }
-  if (!req.body.message) {
-    const msg = 'invalid Pub/Sub message format';
-    console.error(`error: ${msg}`);
-    res.status(400).send(`Bad Request: ${msg}`);
-    return;
-  }
-
-  const pubSubMessage = req.body.message;
-  const name = pubSubMessage.data
-    ? Buffer.from(pubSubMessage.data, 'base64').toString().trim()
-    : 'World';
-
-  console.log(`Hello ${name}!`);
-  res.status(204).send();
+app.get('/', (req, res) => {
+    const name = process.env.NAME || 'World';
+    res.send(`Hello ${name}!`);
 });
-// [END run_pubsub_handler]
-// [END cloudrun_pubsub_handler]
 
+const port = parseInt(process.env.PORT) || 8080;
+    app.listen(port, () => {
+    console.log(`helloworld: listening on port ${port}`);
+});
+// [END run_helloworld_service]
+// [END cloudrun_helloworld_service]
+
+// Exports for testing purposes.
 module.exports = app;
