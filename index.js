@@ -6,11 +6,24 @@
 // [START run_pubsub_server_setup]
 const express = require('express');
 const app = express();
-const PORT = 8080;
 
-app.get('/', (req, res) => {
-    const name = process.env.NAME || 'World';
-    res.send(`Hello ${name}!`);
+app.use(express.json());
+
+app.post('/', (req, res) => {
+    if (!req.body || !req.body.message) {
+        const msg = 'no Pub/Sub message received';
+        console.error(`error: ${msg}`);
+        res.status(400).send(`Bad Request: ${msg}`);
+        return;
+    }
+
+    const pubSubMessage = req.body.message;
+    const name = pubSubMessage.data
+        ? Buffer.from(pubSubMessage.data, 'base64').toString().trim()
+        : 'World';
+
+    console.log(`Hello ${name}!`);
+    res.status(204).send();
 });
 
 const port = parseInt(process.env.PORT) || 8080;
